@@ -8,31 +8,52 @@
 import UIKit
 
 class NoteDetailViewController: UIViewController {
-    
+
     var theNote = Note()
-    
+
     @IBOutlet weak var noteTitleLabel: UITextField!
-    
     @IBOutlet weak var noteTextView: UITextView!
-    
+    @IBOutlet weak var characterCountLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // The view starts here. By now we either have a note to edit
-        // or we have a blank note in theNote property we can use
-        
+
         // Update the screen with the contents of theNote
-        self.noteTitleLabel.text = theNote.title
-        self.noteTextView.text = theNote.text
-        
-        // Set the Cursor in the note text area
-        self.noteTextView.becomeFirstResponder()
+        noteTitleLabel.text = theNote.title
+        noteTextView.text = theNote.text
+        updateCharacterCount()
+
+        // Observe text changes to update character count live
+        noteTextView.delegate = self
+
+        // Dismiss keyboard when tapping outside the text area
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+
+        // Set the cursor in the note text area
+        noteTextView.becomeFirstResponder()
     }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Whenever we leave the screen, update our note model
-        theNote.title = self.noteTitleLabel.text
-        theNote.text = self.noteTextView.text
+        theNote.title = noteTitleLabel.text ?? ""
+        theNote.text = noteTextView.text
     }
-    
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
+    private func updateCharacterCount() {
+        let count = noteTextView.text.count
+        characterCountLabel?.text = "\(count) character\(count == 1 ? "" : "s")"
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension NoteDetailViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        updateCharacterCount()
+    }
 }

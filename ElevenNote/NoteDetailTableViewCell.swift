@@ -7,25 +7,21 @@
 
 import UIKit
 
-class NoteDetailTableViewCell : UITableViewCell {
-    
+class NoteDetailTableViewCell: UITableViewCell {
+
     // The note currently being shown
-    weak var theNote : Note!
-    
+    weak var theNote: Note!
+
     // Interface builder outlets
-    @IBOutlet weak var noteTitleLabel : UILabel!
-    @IBOutlet weak var noteDateLabel : UILabel!
-    @IBOutlet weak var noteTextLabel : UILabel!
-    
+    @IBOutlet weak var noteTitleLabel: UILabel!
+    @IBOutlet weak var noteDateLabel: UILabel!
+    @IBOutlet weak var noteTextLabel: UILabel!
+
     // Insert note contents into the cell
-    func setupCell(theNote:Note) {
-        // Save a weak reference to the note
+    func setupCell(_ theNote: Note) {
         self.theNote = theNote
-        
-        // Update the cell
-        noteTitleLabel.text = theNote.title
+        noteTitleLabel.text = theNote.title.isEmpty ? "Untitled" : theNote.title
         noteTextLabel.text = theNote.text
         noteDateLabel.text = theNote.shortDate
     }
-    
 }
